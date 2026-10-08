@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScamShield AI – Localhost Portal</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 + Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        /* ───── Design Tokens ───── */
+        :root {
+            --bg:         #08101e;
+            --card-bg:    rgba(15, 25, 50, 0.85);
+            --border:     rgba(0, 200, 255, 0.18);
+            --cyan:       #00c8ff;
+            --cyan-dark:  #0090cc;
+            --green:      #00e676;
+            --red:        #ff1744;
+            --yellow:     #ffb300;
+            --text:       #e8f0fe;
+            --muted:      #7a8da8;
+            --radius:     16px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: radial-gradient(ellipse at 50% 0%, rgba(0,200,255,.12) 0%, transparent 65%),
+                        linear-gradient(160deg, #08101e 0%, #0c1a30 100%);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        h1,h2,h3,h4,h5,h6 { font-family: 'Outfit', sans-serif; }
+
+        /* ───── Navbar ───── */
+        .site-nav {
+            background: rgba(8,16,30,.75);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .brand {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.35rem;
+            background: linear-gradient(90deg, var(--cyan), #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand i {
+            background: linear-gradient(135deg, var(--cyan), #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.6rem;
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(0,230,118,.1);
+            border: 1px solid rgba(0,230,118,.25);
+            color: var(--green);
+            border-radius: 50px;
+            padding: 5px 14px;
+            font-size: .82rem;
+            font-weight: 600;
+        }
+        .pulse-dot {
+            width: 9px; height: 9px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--green);
+            animation: pulse 2s infinite;
+            flex-shrink: 0;
+        }
+        @keyframes pulse {
+            0%,100% { transform: scale(.9); opacity: .7; }
+            50%      { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* ───── Hero ───── */
+        .hero { padding: 50px 0 30px; text-align: center; }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(0,200,255,.1);
+            border: 1px solid rgba(0,200,255,.25);
+            color: var(--cyan);
+            border-radius: 50px;
+            padding: 6px 18px;
+            font-size: .8rem;
+            font-weight: 700;
+            letter-spacing: .05em;
+            margin-bottom: 18px;
+        }
+        .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; color: #fff; line-height: 1.2; }
+        .hero h1 span { color: var(--cyan); }
+        .hero p { color: var(--muted); max-width: 580px; margin: 14px auto 0; font-size: 1rem; line-height: 1.65; }
+
+        /* ───── Cards ───── */
+        .card-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(18px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 12px 40px rgba(0,0,0,.4);
+            transition: border-color .3s, box-shadow .3s;
+        }
+        .card-panel:hover { border-color: rgba(0,200,255,.35); box-shadow: 0 16px 50px rgba(0,200,255,.12); }
+
+        /* ───── Scanner Box ───── */
+        .scan-wrap {
+            display: flex;
+            align-items: center;
+            background: rgba(8,16,30,.9);
+            border: 2px solid rgba(0,200,255,.25);
+            border-radius: 14px;
+            padding: 6px 6px 6px 18px;
+            gap: 10px;
+            transition: border-color .3s, box-shadow .3s;
+        }
+        .scan-wrap:focus-within {
+            border-color: var(--cyan);
+            box-shadow: 0 0 22px rgba(0,200,255,.25);
+        }
+        .scan-wrap i { color: var(--cyan); font-size: 1.2rem; flex-shrink: 0; }
+        .scan-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            padding: 10px 0;
+            outline: none;
+        }
+        .scan-input::placeholder { color: var(--muted); }
+
+        /* ───── Buttons ───── */
+        .btn-primary-cyber {
+            background: linear-gradient(135deg, var(--cyan) 0%, #60a5fa 100%);
+            color: #000 !important;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 26px;
+            font-size: .92rem;
+            box-shadow: 0 4px 14px rgba(0,200,255,.3);
+            transition: all .25s;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .btn-primary-cyber:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,200,255,.45);
+        }
+        .btn-primary-cyber:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+        .btn-outline-cyber {
+            background: transparent;
+            color: var(--cyan);
+            border: 1.5px solid rgba(0,200,255,.4);
+            border-radius: 10px;
+            padding: 9px 20px;
+            font-weight: 600;
+            font-size: .88rem;
+            transition: all .25s;
+            cursor: pointer;
+        }
+        .btn-outline-cyber:hover {
+            background: rgba(0,200,255,.1);
+            border-color: var(--cyan);
+        }
+        .btn-outline-cyber:disabled { opacity: .5; cursor: not-allowed; }
+
+        /* ───── Preset Chips ───── */
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.1);
+            color: var(--muted);
+            border-radius: 50px;
+            padding: 5px 14px;
+            font-size: .82rem;
+            cursor: pointer;
+            transition: all .2s;
+            user-select: none;
+        }
+        .chip:hover {
+            background: rgba(0,200,255,.12);
+            border-color: rgba(0,200,255,.4);
+            color: var(--cyan);
+        }
+
+        /* ───── Result Area ───── */
+        .result-box {
+            background: rgba(8,16,30,.95);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 12px;
+            padding: 22px 24px;
+        }
+        .verdict-safe    { color: var(--green); border-color: rgba(0,230,118,.3); }
+        .verdict-warn    { color: var(--yellow); border-color: rgba(255,179,0,.3); }
+        .verdict-danger  { color: var(--red);   border-color: rgba(255,23,68,.3); }
+
+        /* ───── Diagnostic Items ───── */
+        .diag-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 10px;
+            padding: 12px 16px;
+            gap: 10px;
+        }
+        .diag-label { font-size: .88rem; font-weight: 600; }
+        .diag-detail { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+        .badge-status {
+            font-size: .7rem;
+            font-weight: 700;
+            border-radius: 6px;
+            padding: 3px 10px;
+            letter-spacing: .04em;
+        }
+
+        /* ───── QR / LAN Card ───── */
+        .lan-url-text {
+            font-family: 'Courier New', monospace;
+            color: var(--green);
+            font-size: .95rem;
+            word-break: break-all;
+            font-weight: 600;
+        }
+
+        /* ───── Section Heading ───── */
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 14px;
+        }
+        .section-heading i { color: var(--cyan); font-size: 1.15rem; }
+
+        /* ───── Open App Button ───── */
+        .open-app-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,200,255,.1);
+            border: 1.5px solid rgba(0,200,255,.3);
+            color: var(--cyan);
+            border-radius: 10px;
+            padding: 9px 20px;
+            font-size: .88rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all .25s;
+        }
+        .open-app-btn:hover {
+            background: rgba(0,200,255,.18);
+            border-color: var(--cyan);
+            color: var(--cyan);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="site-nav">
+        <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <a href="/" class="brand">
+                <i class="bi bi-shield-fill-check"></i>
+                ScamShield AI
+            </a>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span class="status-pill">
+                    <span class="pulse-dot"></span>
+                    Server Online
+                </span>
+                <a href="/" class="open-app-btn">
+                    <i class="bi bi-grid-1x2-fill"></i> Open Full App
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── Main ── -->
+    <div class="container" style="max-width: 920px;">
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">⚡ LOCALHOST SMART PORTAL</div>
+            <h1>ScamShield <span>Instant Scanner</span></h1>
+            <p>Paste any suspicious message, link, or job offer below. The AI automatically detects the type and scans it instantly.</p>
+        </div>
+
+        <!-- ── Universal Smart Scanner ── -->
+        <div class="card-panel p-4 mb-4">
+            <div class="section-heading">
+                <i class="bi bi-search"></i>
+                Smart Scam Scanner
+            </div>
+
+            <form onsubmit="event.preventDefault(); runSmartScan();">
+                <div class="scan-wrap mb-3">
+                    <i class="bi bi-shield-check"></i>
+                    <input
+                        type="text"
+                        id="smartInput"
+                        class="scan-input"
+                        placeholder="Paste a message, link (https://...), or job offer here…"
+                        required
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="btn-primary-cyber" id="smartScanBtn">
+                        <i class="bi bi-lightning-charge-fill me-1"></i> Scan Now
+                    </button>
+                </div>
+            </form>
+
+            <!-- Quick Presets -->
+            <div class="d-flex align-items-center flex-wrap gap-2">
+                <span style="font-size:.8rem; color:var(--muted); font-weight:600;">Try examples:</span>
+
+                <span class="chip" onclick="setPreset('URGENT: Earn Rs 10,000 daily working 2 hours! Click telegram link: https://t.me/fake_job_bonus')">
+                    <i class="bi bi-briefcase-fill text-warning"></i> Fake Job Offer
+                </span>
+                <span class="chip" onclick="setPreset('Dear Customer, your bank account is frozen. Update KYC now at http://secure-bank-kyc-update.xyz')">
+                    <i class="bi bi-bank text-danger"></i> Bank KYC Scam
+                </span>
+                <span class="chip" onclick="setPreset('http://free-crypto-giveaway-claim.top/bonus')">
+                    <i class="bi bi-link-45deg text-info"></i> Phishing Link
+                </span>
+            </div>
+
+            <!-- Result Output -->
+            <div id="smartResultArea" class="mt-4" style="display:none;"></div>
+        </div>
+
+        <!-- ── Two Cards Row ── -->
+        <div class="row g-4 mb-4">
+
+            <!-- Card 1: Server Self-Check -->
+            <div class="col-md-6">
+                <div class="card-panel p-4 h-100 d-flex flex-column">
+                    <div class="section-heading">
+                        <i class="bi bi-cpu-fill"></i>
+                        Server Health Check
+                        <span id="diagScoreBadge" class="badge badge-status ms-auto" style="background:rgba(255,255,255,.08); color:var(--muted);">Not tested</span>
+                    </div>
+                    <p style="font-size:.85rem; color:var(--muted); margin-bottom:14px;">
+                        Verify all AI modules, headless sandbox detonator, and the network interface are running correctly.
+                    </p>
+
+                    <div id="diagList" class="d-flex flex-column gap-2 flex-grow-1">
+                        <div class="diag-item">
+                            <div>
+                                <div class="diag-label"><i class="bi bi-circle text-secondary me-2"></i>Gemini AI Engine</div>
+                                <div class="diag-detail">Not checked yet</div>
+                            </div>
+                        </div>
+                        <div class="diag-item">
+                            <div>
+                                <div class="diag-label"><i class="bi bi-circle text-secondary me-2"></i>Headless Sandbox Detonator</div>
+                                <div class="diag-detail">Not checked yet</div>
+                            </div>
+                        </div>
+                        <div class="diag-item">
+                            <div>
+                                <div class="diag-label"><i class="bi bi-circle text-secondary me-2"></i>Wi-Fi LAN Broadcast</div>
+                                <div class="diag-detail">Not checked yet</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary-cyber w-100 mt-3" onclick="runSelfCheck()" id="btnSelfCheck" style="border-radius:12px;">
+                        <i class="bi bi-check2-all me-2"></i> Run Health Check
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 2: Mobile QR / LAN Access -->
+            <div class="col-md-6">
+                <div class="card-panel p-4 h-100 d-flex flex-column">
+                    <div class="section-heading">
+                        <i class="bi bi-wifi"></i>
+                        Mobile & LAN Access
+                        <span id="portalPortBadge" class="badge badge-status ms-auto" style="background:rgba(0,230,118,.12); color:var(--green); border:1px solid rgba(0,230,118,.25);">Port 5000</span>
+                    </div>
+                    <p style="font-size:.85rem; color:var(--muted); margin-bottom:14px;">
+                        Scan the QR code with your phone (on the same Wi-Fi) to use ScamShield on any device.
+                    </p>
+
+                    <div class="d-flex align-items-center gap-3 p-3 rounded-3 mb-3" style="background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);">
+                        <div style="background:#fff; padding:8px; border-radius:10px; flex-shrink:0;">
+                            <img id="portalQrImg" src="" alt="QR Code for LAN Access" style="width:96px; height:96px; border-radius:6px; display:block;">
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <div style="font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:5px;">LAN Address</div>
+                            <div class="lan-url-text mb-2" id="portalLanUrl">Loading…</div>
+                            <button class="btn-outline-cyber" onclick="copyPortalUrl()" id="copyBtn" style="font-size:.82rem; padding:6px 14px;">
+                                <i class="bi bi-clipboard me-1"></i> Copy Link
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="font-size:.78rem; color:var(--muted); display:flex; align-items:center; gap:6px; margin-top:auto;">
+                        <i class="bi bi-info-circle-fill" style="color:var(--cyan);"></i>
+                        No internet needed — just be on the same Wi-Fi router.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Quick Links ── -->
+        <div class="card-panel p-4">
+            <div class="section-heading">
+                <i class="bi bi-link-45deg"></i>
+                Quick Links
+            </div>
+            <div class="row g-2" id="quickLinksRow">
+                <div class="col-6 col-md-4">
+                    <a href="/" class="d-flex align-items-center gap-2 p-3 rounded-3 text-decoration-none" style="background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:var(--text); transition:all .2s;" onmouseover="this.style.borderColor='rgba(0,200,255,.35)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+                        <i class="bi bi-speedometer2" style="color:var(--cyan); font-size:1.1rem;"></i>
+                        <span style="font-size:.88rem; font-weight:600;">Main Dashboard</span>
+                    </a>
+                </div>
+                <div class="col-6 col-md-4">
+                    <a href="/api/health" target="_blank" class="d-flex align-items-center gap-2 p-3 rounded-3 text-decoration-none" style="background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:var(--text); transition:all .2s;" onmouseover="this.style.borderColor='rgba(0,200,255,.35)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+                        <i class="bi bi-heart-pulse-fill" style="color:#f87171; font-size:1.1rem;"></i>
+                        <span style="font-size:.88rem; font-weight:600;">API Health</span>
+                    </a>
+                </div>
+                <div class="col-6 col-md-4">
+                    <a href="/api/localhost/metrics" target="_blank" class="d-flex align-items-center gap-2 p-3 rounded-3 text-decoration-none" style="background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:var(--text); transition:all .2s;" onmouseover="this.style.borderColor='rgba(0,200,255,.35)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+                        <i class="bi bi-bar-chart-fill" style="color:#a78bfa; font-size:1.1rem;"></i>
+                        <span style="font-size:.88rem; font-weight:600;">Server Metrics</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /container -->
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        /* ── Preset Scan ── */
+        function setPreset(text) {
+            document.getElementById('smartInput').value = text;
+            runSmartScan();
+        }
+
+        /* ── Smart Scan ── */
+        async function runSmartScan() {
+            const input  = document.getElementById('smartInput').value.trim();
+            const btn    = document.getElementById('smartScanBtn');
+            const area   = document.getElementById('smartResultArea');
+
+            if (!input) return;
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Scanning…`;
+
+            try {
+                const res  = await fetch('/api/localhost/quick_scan', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ query: input })
+                });
+                const data = await res.json();
+
+                let score = data.risk_score || 0;
+                let colorClass = score >= 70 ? 'verdict-danger' : (score >= 35 ? 'verdict-warn' : 'verdict-safe');
+                let iconClass  = score >= 70 ? 'bi-exclamation-triangle-fill text-danger' : (score >= 35 ? 'bi-exclamation-circle-fill text-warning' : 'bi-check-circle-fill text-success');
+                let bgColor    = score >= 70 ? 'rgba(255,23,68,.08)'  : (score >= 35 ? 'rgba(255,179,0,.08)' : 'rgba(0,230,118,.08)');
+                let borderColor= score >= 70 ? 'rgba(255,23,68,.3)'   : (score >= 35 ? 'rgba(255,179,0,.3)'  : 'rgba(0,230,118,.3)');
+
+                area.style.display = 'block';
+                area.innerHTML = `
+                    <div class="result-box ${colorClass}" style="background:${bgColor}; border-color:${borderColor};">
+                        <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi ${iconClass} fs-5"></i>
+                                <div>
+                                    <div style="font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;">${data.detected_type || 'Content Scan'}</div>
+                                    <div style="font-size:1.1rem; font-weight:700;">${data.verdict}</div>
+                                </div>
+                            </div>
+                            <div style="background:rgba(255,255,255,.08); border-radius:10px; padding:8px 16px; text-align:center; flex-shrink:0;">
+                                <div style="font-size:1.4rem; font-weight:800;">${score}</div>
+                                <div style="font-size:.7rem; color:var(--muted);">/ 100 Risk</div>
+                            </div>
+                        </div>
+                        <div style="font-size:.85rem; font-weight:600; color:#fff; margin-bottom:8px;">AI Analysis:</div>
+                        <ul style="padding-left:18px; margin:0;">
+                            ${(data.reasons || []).map(r => `<li style="font-size:.84rem; color:var(--muted); margin-bottom:5px;">${r}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            } catch (err) {
+                area.style.display = 'block';
+                area.innerHTML = `
+                    <div class="result-box" style="border-color:rgba(255,23,68,.4); background:rgba(255,23,68,.06);">
+                        <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                        <span style="color:#ff6b6b;">Scan failed: ${err.message}. Make sure the server is running.</span>
+                    </div>`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="bi bi-lightning-charge-fill me-1"></i> Scan Now`;
+            }
+        }
+
+        /* ── Self Check ── */
+        async function runSelfCheck() {
+            const btn    = document.getElementById('btnSelfCheck');
+            const list   = document.getElementById('diagList');
+            const badge  = document.getElementById('diagScoreBadge');
+
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Checking…`;
+
+            try {
+                const res  = await fetch('/api/localhost/test_all');
+                const data = await res.json();
+
+                const score = data.health_score || 0;
+                badge.textContent = `Health: ${score}%`;
+                badge.style.background = score === 100 ? 'rgba(0,230,118,.12)' : 'rgba(255,179,0,.12)';
+                badge.style.color       = score === 100 ? 'var(--green)' : 'var(--yellow)';
+                badge.style.border      = score === 100 ? '1px solid rgba(0,230,118,.3)' : '1px solid rgba(255,179,0,.3)';
+
+                list.innerHTML = (data.diagnostics || []).map(d => `
+                    <div class="diag-item" style="border-color:${d.pass ? 'rgba(0,230,118,.2)' : 'rgba(255,23,68,.2)'};">
+                        <div>
+                            <div class="diag-label">
+                                <i class="bi ${d.pass ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger'} me-2"></i>${d.name}
+                            </div>
+                            <div class="diag-detail ms-4">${d.details || ''}</div>
+                        </div>
+                        <span class="badge-status" style="background:${d.pass ? 'rgba(0,230,118,.15)' : 'rgba(255,23,68,.15)'}; color:${d.pass ? 'var(--green)' : 'var(--red)'}; border:1px solid ${d.pass ? 'rgba(0,230,118,.3)' : 'rgba(255,23,68,.3)'};">
+                            ${d.status}
+                        </span>
+                    </div>
+                `).join('');
+            } catch (err) {
+                list.innerHTML = `
+                    <div class="result-box" style="border-color:rgba(255,23,68,.3); background:rgba(255,23,68,.06);">
+                        <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                        <span style="font-size:.85rem; color:#ff6b6b;">Diagnostic failed: ${err.message}</span>
+                    </div>`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="bi bi-check2-all me-2"></i> Run Health Check`;
+            }
+        }
+
+        /* ── Load LAN Info ── */
+        async function loadPortalInfo() {
+            try {
+                const res  = await fetch('/api/localhost_info');
+                const data = await res.json();
+
+                const lanEl  = document.getElementById('portalLanUrl');
+                const qrImg  = document.getElementById('portalQrImg');
+                const portBadge = document.getElementById('portalPortBadge');
+
+                if (lanEl) lanEl.textContent = data.lan_url || 'http://127.0.0.1:5000';
+                if (portBadge) portBadge.textContent = `Port ${data.port || 5000}`;
+                if (qrImg && data.lan_url) {
+                    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.lan_url)}&bgcolor=ffffff&color=000000&margin=2`;
+                }
+            } catch(e) {
+                const lanEl = document.getElementById('portalLanUrl');
+                if (lanEl) lanEl.textContent = 'http://127.0.0.1:5000';
+                const qrImg = document.getElementById('portalQrImg');
+                if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=http://127.0.0.1:5000&bgcolor=ffffff&color=000000&margin=2`;
+            }
+        }
+
+        /* ── Copy LAN URL ── */
+        async function copyPortalUrl() {
+            const el  = document.getElementById('portalLanUrl');
+            const btn = document.getElementById('copyBtn');
+            if (!el) return;
+            try {
+                await navigator.clipboard.writeText(el.textContent);
+                btn.innerHTML = `<i class="bi bi-check2 me-1"></i> Copied!`;
+                setTimeout(() => { btn.innerHTML = `<i class="bi bi-clipboard me-1"></i> Copy Link`; }, 2000);
+            } catch(e) {
+                alert('Link: ' + el.textContent);
+            }
+        }
+
+        /* ── Init ── */
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPortalInfo();
+            runSelfCheck();
+        });
+    </script>
+</body>
+</html>
