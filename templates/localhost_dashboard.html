@@ -1,146 +1,335 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="cyber-dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScamShield AI – Localhost Portal</title>
+    <title>ScamShield AI - Localhost Command Portal</title>
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Outfit for Headings, Inter for Body -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
 
-    <!-- Bootstrap 5 + Bootstrap Icons -->
+    <!-- Bootstrap 5 CDN & Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    <!-- Custom Premium Stylesheet (Consistent with Official ScamShield Website) -->
     <style>
-        /* ───── Design Tokens ───── */
         :root {
-            --bg:         #08101e;
-            --card-bg:    rgba(15, 25, 50, 0.85);
-            --border:     rgba(0, 200, 255, 0.18);
-            --cyan:       #00c8ff;
-            --cyan-dark:  #0090cc;
-            --green:      #00e676;
-            --red:        #ff1744;
-            --yellow:     #ffb300;
-            --text:       #e8f0fe;
-            --muted:      #7a8da8;
-            --radius:     16px;
+            --bg-color: #080c14;
+            --card-bg: rgba(17, 24, 39, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --primary-glow: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            --safe-color: #00e676;
+            --warn-color: #ffb300;
+            --danger-color: #ff1744;
+            --text-main: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --cyan: #00f2fe;
+            --cyan-glow: rgba(0, 242, 254, 0.35);
         }
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        [data-theme="cyber-dark"] {
+            --bg-color: #080c14;
+            --card-bg: rgba(17, 24, 39, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --primary-glow: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            --safe-color: #00e676;
+            --danger-color: #ff1744;
+        }
+
+        [data-theme="neon-cyan"] {
+            --bg-color: #03111e;
+            --card-bg: rgba(10, 30, 50, 0.85);
+            --border-color: rgba(0, 242, 254, 0.25);
+            --primary-glow: linear-gradient(135deg, #00f2fe 0%, #00c6ff 100%);
+            --safe-color: #00ffd5;
+            --danger-color: #ff0055;
+        }
+
+        [data-theme="matrix-green"] {
+            --bg-color: #021208;
+            --card-bg: rgba(6, 32, 16, 0.85);
+            --border-color: rgba(0, 230, 118, 0.25);
+            --primary-glow: linear-gradient(135deg, #00e676 0%, #00b0ff 100%);
+            --safe-color: #00ff66;
+            --danger-color: #ff3d00;
+        }
+
+        [data-theme="crimson-defense"] {
+            --bg-color: #140508;
+            --card-bg: rgba(35, 10, 16, 0.85);
+            --border-color: rgba(255, 23, 68, 0.25);
+            --primary-glow: linear-gradient(135deg, #ff1744 0%, #ff9100 100%);
+            --safe-color: #00e676;
+            --danger-color: #ff1744;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
 
         body {
-            background: radial-gradient(ellipse at 50% 0%, rgba(0,200,255,.12) 0%, transparent 65%),
-                        linear-gradient(160deg, #08101e 0%, #0c1a30 100%);
-            color: var(--text);
+            background-color: var(--bg-color);
+            background: linear-gradient(135deg, rgba(8, 12, 20, 0.90), rgba(15, 23, 42, 0.94)),
+                        radial-gradient(ellipse at 50% 0%, rgba(0, 242, 254, 0.12) 0%, transparent 70%);
+            color: var(--text-main);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
+            margin: 0;
             padding-bottom: 60px;
         }
 
-        h1,h2,h3,h4,h5,h6 { font-family: 'Outfit', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .display-font {
+            font-family: 'Outfit', sans-serif;
+        }
 
-        /* ───── Navbar ───── */
+        /* ───── Top Navigation Bar ───── */
         .site-nav {
-            background: rgba(8,16,30,.75);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--border);
-            padding: 14px 0;
+            background: rgba(8, 12, 20, 0.75);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            padding: 14px 0;
         }
-        .brand {
+
+        .navbar-brand-styled {
             font-family: 'Outfit', sans-serif;
             font-weight: 800;
             font-size: 1.35rem;
-            background: linear-gradient(90deg, var(--cyan), #60a5fa);
+            background: var(--primary-glow);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 10px;
         }
-        .brand i {
-            background: linear-gradient(135deg, var(--cyan), #60a5fa);
+
+        .localhost-nav-pill {
+            background: rgba(0, 242, 254, 0.08);
+            border: 1px solid rgba(0, 242, 254, 0.25);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .localhost-nav-pill:hover {
+            background: rgba(0, 242, 254, 0.18);
+            border-color: rgba(0, 242, 254, 0.5);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
+        }
+
+        .text-cyan {
+            color: var(--cyan) !important;
+        }
+
+        .text-cyan-glow {
+            color: var(--cyan);
+            text-shadow: 0 0 8px rgba(0, 242, 254, 0.5);
+        }
+
+        /* ───── Hero Section ───── */
+        .hero-section {
+            padding: 45px 25px 35px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(180deg, rgba(8, 12, 20, 0.7), rgba(15, 23, 42, 0.88));
+            border-radius: 24px;
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            box-shadow: 0 15px 40px rgba(0, 242, 254, 0.12);
+            margin-top: 24px;
+            margin-bottom: 35px;
+        }
+
+        .shield-container {
+            display: inline-block;
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .shield-icon {
+            font-size: 3.6rem;
+            background: var(--primary-glow);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 1.6rem;
+            filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.5));
+            animation: float 4s ease-in-out infinite;
         }
-        .status-pill {
+
+        .shield-pulse {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90px;
+            height: 90px;
+            background: rgba(0, 242, 254, 0.2);
+            border-radius: 50%;
+            z-index: -1;
+            animation: pulse 2.5s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.2; }
+            100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; }
+        }
+
+        /* ───── Localhost Access Card ───── */
+        .localhost-access-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(0, 242, 254, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .localhost-access-card:hover {
+            border-color: rgba(0, 242, 254, 0.5);
+            box-shadow: 0 12px 30px rgba(0, 242, 254, 0.2);
+        }
+
+        /* ───── Glassmorphism Cards ───── */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 242, 254, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 242, 254, 0.12);
+        }
+
+        .card-header-styled {
+            border-bottom: 1px solid var(--border-color);
+            padding: 18px 24px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .card-body-styled {
+            padding: 24px;
+        }
+
+        /* ───── Cyber Buttons ───── */
+        .btn-cyber {
+            background: var(--primary-glow);
+            color: #000 !important;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.25);
+            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            background: rgba(0,230,118,.1);
-            border: 1px solid rgba(0,230,118,.25);
-            color: var(--green);
-            border-radius: 50px;
-            padding: 5px 14px;
-            font-size: .82rem;
-            font-weight: 600;
-        }
-        .pulse-dot {
-            width: 9px; height: 9px;
-            background: var(--green);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--green);
-            animation: pulse 2s infinite;
-            flex-shrink: 0;
-        }
-        @keyframes pulse {
-            0%,100% { transform: scale(.9); opacity: .7; }
-            50%      { transform: scale(1.2); opacity: 1; }
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
         }
 
-        /* ───── Hero ───── */
-        .hero { padding: 50px 0 30px; text-align: center; }
-        .hero-badge {
-            display: inline-block;
-            background: rgba(0,200,255,.1);
-            border: 1px solid rgba(0,200,255,.25);
+        .btn-cyber:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.45);
+            color: #000 !important;
+        }
+
+        .btn-cyber:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-cyber-outline {
+            background: transparent;
+            border: 1px solid rgba(0, 242, 254, 0.35);
             color: var(--cyan);
-            border-radius: 50px;
-            padding: 6px 18px;
-            font-size: .8rem;
-            font-weight: 700;
-            letter-spacing: .05em;
-            margin-bottom: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            padding: 10px 20px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+            cursor: pointer;
         }
-        .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; color: #fff; line-height: 1.2; }
-        .hero h1 span { color: var(--cyan); }
-        .hero p { color: var(--muted); max-width: 580px; margin: 14px auto 0; font-size: 1rem; line-height: 1.65; }
 
-        /* ───── Cards ───── */
-        .card-panel {
-            background: var(--card-bg);
-            backdrop-filter: blur(18px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: 0 12px 40px rgba(0,0,0,.4);
-            transition: border-color .3s, box-shadow .3s;
+        .btn-cyber-outline:hover {
+            background: rgba(0, 242, 254, 0.12);
+            border-color: var(--cyan);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
         }
-        .card-panel:hover { border-color: rgba(0,200,255,.35); box-shadow: 0 16px 50px rgba(0,200,255,.12); }
 
-        /* ───── Scanner Box ───── */
+        /* ───── Form Controls ───── */
+        .form-control-cyber {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            color: #fff !important;
+            padding: 14px 18px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .form-control-cyber:focus {
+            background-color: rgba(255, 255, 255, 0.06);
+            border-color: var(--cyan);
+            box-shadow: 0 0 16px rgba(0, 242, 254, 0.25);
+            outline: none;
+        }
+
+        .form-control-cyber::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* ───── Scanner Input Group ───── */
         .scan-wrap {
             display: flex;
             align-items: center;
-            background: rgba(8,16,30,.9);
-            border: 2px solid rgba(0,200,255,.25);
-            border-radius: 14px;
-            padding: 6px 6px 6px 18px;
+            background: rgba(8, 16, 30, 0.85);
+            border: 2px solid rgba(0, 242, 254, 0.22);
+            border-radius: 16px;
+            padding: 6px 8px 6px 18px;
             gap: 10px;
-            transition: border-color .3s, box-shadow .3s;
+            transition: all 0.3s;
         }
+
         .scan-wrap:focus-within {
             border-color: var(--cyan);
-            box-shadow: 0 0 22px rgba(0,200,255,.25);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.3);
+            background: rgba(10, 22, 42, 0.95);
         }
-        .scan-wrap i { color: var(--cyan); font-size: 1.2rem; flex-shrink: 0; }
+
+        .scan-wrap i {
+            color: var(--cyan);
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
         .scan-input {
             flex: 1;
             background: transparent;
@@ -150,343 +339,614 @@
             padding: 10px 0;
             outline: none;
         }
-        .scan-input::placeholder { color: var(--muted); }
 
-        /* ───── Buttons ───── */
-        .btn-primary-cyber {
-            background: linear-gradient(135deg, var(--cyan) 0%, #60a5fa 100%);
-            color: #000 !important;
-            font-weight: 700;
-            border: none;
-            border-radius: 10px;
-            padding: 11px 26px;
-            font-size: .92rem;
-            box-shadow: 0 4px 14px rgba(0,200,255,.3);
-            transition: all .25s;
-            white-space: nowrap;
-            cursor: pointer;
+        .scan-input::placeholder {
+            color: var(--text-secondary);
         }
-        .btn-primary-cyber:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,200,255,.45);
-        }
-        .btn-primary-cyber:disabled { opacity: .6; cursor: not-allowed; transform: none; }
-
-        .btn-outline-cyber {
-            background: transparent;
-            color: var(--cyan);
-            border: 1.5px solid rgba(0,200,255,.4);
-            border-radius: 10px;
-            padding: 9px 20px;
-            font-weight: 600;
-            font-size: .88rem;
-            transition: all .25s;
-            cursor: pointer;
-        }
-        .btn-outline-cyber:hover {
-            background: rgba(0,200,255,.1);
-            border-color: var(--cyan);
-        }
-        .btn-outline-cyber:disabled { opacity: .5; cursor: not-allowed; }
 
         /* ───── Preset Chips ───── */
         .chip {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(255,255,255,.05);
-            border: 1px solid rgba(255,255,255,.1);
-            color: var(--muted);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
             border-radius: 50px;
-            padding: 5px 14px;
-            font-size: .82rem;
+            padding: 6px 14px;
+            font-size: 0.82rem;
             cursor: pointer;
-            transition: all .2s;
+            transition: all 0.25s;
             user-select: none;
         }
+
         .chip:hover {
-            background: rgba(0,200,255,.12);
-            border-color: rgba(0,200,255,.4);
+            background: rgba(0, 242, 254, 0.12);
+            border-color: rgba(0, 242, 254, 0.4);
             color: var(--cyan);
+            transform: translateY(-1px);
         }
 
-        /* ───── Result Area ───── */
-        .result-box {
-            background: rgba(8,16,30,.95);
-            border: 1px solid rgba(255,255,255,.1);
-            border-radius: 12px;
-            padding: 22px 24px;
+        /* ───── Status Badge ───── */
+        .status-badge {
+            background: rgba(0, 230, 118, 0.1);
+            color: var(--safe-color);
+            border: 1px solid rgba(0, 230, 118, 0.25);
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .verdict-safe    { color: var(--green); border-color: rgba(0,230,118,.3); }
-        .verdict-warn    { color: var(--yellow); border-color: rgba(255,179,0,.3); }
-        .verdict-danger  { color: var(--red);   border-color: rgba(255,23,68,.3); }
 
-        /* ───── Diagnostic Items ───── */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--safe-color);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px var(--safe-color);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        /* ───── Diagnostic Matrix ───── */
         .diag-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(255,255,255,.04);
-            border: 1px solid rgba(255,255,255,.08);
-            border-radius: 10px;
-            padding: 12px 16px;
-            gap: 10px;
-        }
-        .diag-label { font-size: .88rem; font-weight: 600; }
-        .diag-detail { font-size: .78rem; color: var(--muted); margin-top: 2px; }
-        .badge-status {
-            font-size: .7rem;
-            font-weight: 700;
-            border-radius: 6px;
-            padding: 3px 10px;
-            letter-spacing: .04em;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 12px;
+            padding: 13px 16px;
+            gap: 12px;
+            transition: all 0.25s;
         }
 
-        /* ───── QR / LAN Card ───── */
-        .lan-url-text {
+        .diag-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 242, 254, 0.25);
+        }
+
+        .diag-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .diag-detail {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .badge-status {
+            font-size: 0.72rem;
+            font-weight: 700;
+            border-radius: 8px;
+            padding: 4px 10px;
+            letter-spacing: 0.04em;
+        }
+
+        /* ───── Result Box ───── */
+        .result-box {
+            background: rgba(8, 16, 30, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 22px 24px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .lan-url-box {
             font-family: 'Courier New', monospace;
-            color: var(--green);
-            font-size: .95rem;
+            color: var(--safe-color);
+            font-size: 0.92rem;
             word-break: break-all;
             font-weight: 600;
         }
 
-        /* ───── Section Heading ───── */
-        .section-heading {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 14px;
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
         }
-        .section-heading i { color: var(--cyan); font-size: 1.15rem; }
-
-        /* ───── Open App Button ───── */
-        .open-app-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0,200,255,.1);
-            border: 1.5px solid rgba(0,200,255,.3);
-            color: var(--cyan);
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
             border-radius: 10px;
-            padding: 9px 20px;
-            font-size: .88rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all .25s;
         }
-        .open-app-btn:hover {
-            background: rgba(0,200,255,.18);
-            border-color: var(--cyan);
-            color: var(--cyan);
-            transform: translateY(-1px);
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 242, 254, 0.4);
         }
     </style>
 </head>
+
 <body>
 
-    <!-- ── Navbar ── -->
+    <!-- Animated Cyber Node Particle Background Canvas Overlay -->
+    <canvas id="bgParticleCanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0.3;"></canvas>
+
+    <!-- Top Navigation Bar -->
     <nav class="site-nav">
-        <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <a href="/" class="brand">
-                <i class="bi bi-shield-fill-check"></i>
-                ScamShield AI
-            </a>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <span class="status-pill">
-                    <span class="pulse-dot"></span>
-                    Server Online
-                </span>
-                <a href="/" class="open-app-btn">
-                    <i class="bi bi-grid-1x2-fill"></i> Open Full App
+        <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2" style="position: relative; z-index: 10;">
+            <div class="d-flex align-items-center gap-3">
+                <a href="/" class="navbar-brand-styled">
+                    <i class="bi bi-shield-shaded text-cyan fs-3"></i>
+                    <span>SCAMSHIELD CORE</span>
+                </a>
+
+                <!-- Live Localhost Pill Badge -->
+                <div class="localhost-nav-pill d-flex align-items-center gap-2 py-1 px-3" title="Localhost server active and broadcasting">
+                    <span class="status-dot"></span>
+                    <div>
+                        <span class="d-block fw-bold text-white small" style="font-size: 0.75rem;">🟢 Localhost: Active</span>
+                        <span class="d-block text-cyan-glow font-monospace" style="font-size: 0.68rem;" id="nav-host-ip">http://127.0.0.1:5000</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs (Aligned with Official Website) -->
+                <div class="d-none d-lg-flex align-items-center gap-2 ms-2">
+                    <a href="/" class="btn btn-sm btn-outline-info rounded-pill px-3 py-1 text-cyan fw-bold d-flex align-items-center gap-1" style="border-color: rgba(0, 242, 254, 0.35);">
+                        <i class="bi bi-grid-1x2-fill me-1"></i> Full App
+                    </a>
+                    <a href="/api/health" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 text-light small d-flex align-items-center gap-1">
+                        <i class="bi bi-heart-pulse-fill text-danger me-1"></i> API Health
+                    </a>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <!-- Theme Switcher Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary text-light dropdown-toggle d-flex align-items-center gap-1" type="button" data-bs-toggle="dropdown" id="themeDropdownBtn" style="border-radius: 10px;">
+                        <i class="bi bi-palette-fill text-cyan"></i> <span class="d-none d-md-inline">Theme</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow-lg" style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(0, 242, 254, 0.2);">
+                        <li><a class="dropdown-item active d-flex align-items-center gap-2" href="javascript:void(0)" onclick="setTheme('cyber-dark', this)"><i class="bi bi-moon-stars-fill text-info"></i> Cyber Dark (Default)</a></li>
+                        <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="setTheme('neon-cyan', this)"><i class="bi bi-lightning-charge-fill text-cyan"></i> Neon Cyan Glow</a></li>
+                        <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="setTheme('matrix-green', this)"><i class="bi bi-terminal-fill text-success"></i> Deep Matrix Green</a></li>
+                        <li><a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0)" onclick="setTheme('crimson-defense', this)"><i class="bi bi-shield-exclamation text-danger"></i> Crimson Cyber Ops</a></li>
+                    </ul>
+                </div>
+
+                <!-- Sound FX Toggle -->
+                <button class="btn btn-sm btn-outline-secondary text-light d-flex align-items-center gap-1" id="soundFxBtn" onclick="toggleSoundFx()" title="Toggle Sci-Fi Audio Alerts" style="border-radius: 10px;">
+                    <i class="bi bi-volume-up-fill text-warning" id="soundFxIcon"></i> <span class="d-none d-md-inline" id="soundFxText">FX: ON</span>
+                </button>
+
+                <!-- Full App Return CTA -->
+                <a href="/" class="btn btn-sm btn-cyber ms-1">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Return to Main App
                 </a>
             </div>
         </div>
     </nav>
 
-    <!-- ── Main ── -->
-    <div class="container" style="max-width: 920px;">
+    <!-- Main Container (Aligned Layout) -->
+    <div class="container" style="position: relative; z-index: 10;">
 
-        <!-- Hero -->
-        <div class="hero">
-            <div class="hero-badge">⚡ LOCALHOST SMART PORTAL</div>
-            <h1>ScamShield <span>Instant Scanner</span></h1>
-            <p>Paste any suspicious message, link, or job offer below. The AI automatically detects the type and scans it instantly.</p>
-        </div>
-
-        <!-- ── Universal Smart Scanner ── -->
-        <div class="card-panel p-4 mb-4">
-            <div class="section-heading">
-                <i class="bi bi-search"></i>
-                Smart Scam Scanner
+        <!-- Header Hero Section (Matching Official Site) -->
+        <div class="hero-section">
+            <div class="shield-container">
+                <i class="bi bi-shield-lock-fill shield-icon"></i>
+                <div class="shield-pulse"></div>
             </div>
+            <h1 class="display-5 fw-bold mb-2">ScamShield <span style="background: var(--primary-glow); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Localhost Portal</span></h1>
+            <p class="text-secondary lead mx-auto" style="max-width: 650px;">
+                Zero-configuration cyber scanning node with instant message classification, full API diagnostic matrix, and local network Wi-Fi device access.
+            </p>
 
-            <form onsubmit="event.preventDefault(); runSmartScan();">
-                <div class="scan-wrap mb-3">
-                    <i class="bi bi-shield-check"></i>
-                    <input
-                        type="text"
-                        id="smartInput"
-                        class="scan-input"
-                        placeholder="Paste a message, link (https://...), or job offer here…"
-                        required
-                        autocomplete="off"
-                    >
-                    <button type="submit" class="btn-primary-cyber" id="smartScanBtn">
-                        <i class="bi bi-lightning-charge-fill me-1"></i> Scan Now
-                    </button>
-                </div>
-            </form>
-
-            <!-- Quick Presets -->
-            <div class="d-flex align-items-center flex-wrap gap-2">
-                <span style="font-size:.8rem; color:var(--muted); font-weight:600;">Try examples:</span>
-
-                <span class="chip" onclick="setPreset('URGENT: Earn Rs 10,000 daily working 2 hours! Click telegram link: https://t.me/fake_job_bonus')">
-                    <i class="bi bi-briefcase-fill text-warning"></i> Fake Job Offer
-                </span>
-                <span class="chip" onclick="setPreset('Dear Customer, your bank account is frozen. Update KYC now at http://secure-bank-kyc-update.xyz')">
-                    <i class="bi bi-bank text-danger"></i> Bank KYC Scam
-                </span>
-                <span class="chip" onclick="setPreset('http://free-crypto-giveaway-claim.top/bonus')">
-                    <i class="bi bi-link-45deg text-info"></i> Phishing Link
-                </span>
-            </div>
-
-            <!-- Result Output -->
-            <div id="smartResultArea" class="mt-4" style="display:none;"></div>
-        </div>
-
-        <!-- ── Two Cards Row ── -->
-        <div class="row g-4 mb-4">
-
-            <!-- Card 1: Server Self-Check -->
-            <div class="col-md-6">
-                <div class="card-panel p-4 h-100 d-flex flex-column">
-                    <div class="section-heading">
-                        <i class="bi bi-cpu-fill"></i>
-                        Server Health Check
-                        <span id="diagScoreBadge" class="badge badge-status ms-auto" style="background:rgba(255,255,255,.08); color:var(--muted);">Not tested</span>
-                    </div>
-                    <p style="font-size:.85rem; color:var(--muted); margin-bottom:14px;">
-                        Verify all AI modules, headless sandbox detonator, and the network interface are running correctly.
-                    </p>
-
-                    <div id="diagList" class="d-flex flex-column gap-2 flex-grow-1">
-                        <div class="diag-item">
+            <!-- Expressive Localhost & Network Access Bar -->
+            <div class="localhost-access-card mx-auto mt-4 p-3 rounded-4" style="max-width: 780px;">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-5 text-start border-end border-secondary border-opacity-25 ps-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-broadcast text-cyan fs-4"></i>
                             <div>
-                                <div class="diag-label"><i class="bi bi-circle text-secondary me-2"></i>Gemini AI Engine</div>
-                                <div class="diag-detail">Not checked yet</div>
-                            </div>
-                        </div>
-                        <div class="diag-item">
-                            <div>
-                                <div class="diag-label"><i class="bi bi-circle text-secondary me-2"></i>Headless Sandbox Detonator</div>
-                                <div class="diag-detail">Not checked yet</div>
-                            </div>
-                        </div>
-                        <div class="diag-item">
-                            <div>
-                                <div class="diag-label"><i class="bi bi-circle text-secondary me-2"></i>Wi-Fi LAN Broadcast</div>
-                                <div class="diag-detail">Not checked yet</div>
+                                <small class="text-uppercase text-secondary fw-semibold d-block" style="letter-spacing: 1px; font-size: 0.65rem;">Localhost & Wi-Fi Address</small>
+                                <div class="fw-bold text-white text-truncate font-monospace" id="hero-host-url" style="font-size: 0.88rem;">http://127.0.0.1:5000</div>
                             </div>
                         </div>
                     </div>
-
-                    <button class="btn-primary-cyber w-100 mt-3" onclick="runSelfCheck()" id="btnSelfCheck" style="border-radius:12px;">
-                        <i class="bi bi-check2-all me-2"></i> Run Health Check
-                    </button>
+                    <div class="col-md-4 text-start border-end border-secondary border-opacity-25 ps-3">
+                        <small class="text-uppercase text-secondary fw-semibold d-block" style="letter-spacing: 1px; font-size: 0.65rem;">Backend Latency & Health</small>
+                        <div class="d-flex align-items-center gap-2 mt-1">
+                            <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-25 font-monospace" id="hero-latency-badge"><i class="bi bi-lightning-fill me-1"></i>12 ms</span>
+                            <span class="text-secondary small" id="hero-status-sub" style="font-size: 0.78rem;">Core Engine Ready</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 d-flex gap-2 justify-content-end pe-3">
+                        <button class="btn btn-sm btn-cyber flex-grow-1" onclick="document.getElementById('mobileQrCard').scrollIntoView({behavior: 'smooth'})">
+                            <i class="bi bi-qr-code-scan me-1"></i> Mobile QR
+                        </button>
+                        <button class="btn btn-sm btn-cyber-outline" onclick="copyPortalUrl()" title="Copy Localhost URL">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Card 2: Mobile QR / LAN Access -->
-            <div class="col-md-6">
-                <div class="card-panel p-4 h-100 d-flex flex-column">
-                    <div class="section-heading">
-                        <i class="bi bi-wifi"></i>
-                        Mobile & LAN Access
-                        <span id="portalPortBadge" class="badge badge-status ms-auto" style="background:rgba(0,230,118,.12); color:var(--green); border:1px solid rgba(0,230,118,.25);">Port 5000</span>
-                    </div>
-                    <p style="font-size:.85rem; color:var(--muted); margin-bottom:14px;">
-                        Scan the QR code with your phone (on the same Wi-Fi) to use ScamShield on any device.
-                    </p>
-
-                    <div class="d-flex align-items-center gap-3 p-3 rounded-3 mb-3" style="background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);">
-                        <div style="background:#fff; padding:8px; border-radius:10px; flex-shrink:0;">
-                            <img id="portalQrImg" src="" alt="QR Code for LAN Access" style="width:96px; height:96px; border-radius:6px; display:block;">
-                        </div>
-                        <div class="flex-grow-1 min-w-0">
-                            <div style="font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:5px;">LAN Address</div>
-                            <div class="lan-url-text mb-2" id="portalLanUrl">Loading…</div>
-                            <button class="btn-outline-cyber" onclick="copyPortalUrl()" id="copyBtn" style="font-size:.82rem; padding:6px 14px;">
-                                <i class="bi bi-clipboard me-1"></i> Copy Link
-                            </button>
-                        </div>
-                    </div>
-
-                    <div style="font-size:.78rem; color:var(--muted); display:flex; align-items:center; gap:6px; margin-top:auto;">
-                        <i class="bi bi-info-circle-fill" style="color:var(--cyan);"></i>
-                        No internet needed — just be on the same Wi-Fi router.
-                    </div>
-                </div>
+            <div class="mt-3">
+                <span class="status-badge">
+                    <span class="status-dot"></span>
+                    <span id="hero-core-status-text">ScamShield Engine Core: Online & Local Broadcasting</span>
+                </span>
             </div>
         </div>
 
-        <!-- ── Quick Links ── -->
-        <div class="card-panel p-4">
-            <div class="section-heading">
-                <i class="bi bi-link-45deg"></i>
-                Quick Links
+        <!-- 2-Column Responsive Dashboard Layout (Matching Official Website Alignment) -->
+        <div class="row g-4">
+
+            <!-- Left Column: Primary Scanner & Quick Tools (col-lg-7) -->
+            <div class="col-lg-7">
+
+                <!-- Universal 1-Box Smart Scam Scanner -->
+                <div class="glass-card">
+                    <div class="card-header-styled d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-cpu-fill text-cyan fs-5"></i>
+                            <h5 class="m-0 fw-bold">Universal Smart Scam Scanner</h5>
+                        </div>
+                        <span class="badge bg-info bg-opacity-20 text-info border border-info border-opacity-25 extra-small">AI Auto-Classification</span>
+                    </div>
+                    <div class="card-body-styled">
+                        <p class="text-secondary small mb-3">
+                            Paste any text, SMS message, banking URL, QR string, or job proposal. The security engine auto-detects the content format and runs targeted heuristics automatically.
+                        </p>
+
+                        <form onsubmit="event.preventDefault(); runSmartScan();">
+                            <div class="scan-wrap mb-3">
+                                <i class="bi bi-search"></i>
+                                <input
+                                    type="text"
+                                    id="smartInput"
+                                    class="scan-input"
+                                    placeholder="Paste suspicious message, link (https://...), or fake job text..."
+                                    required
+                                    autocomplete="off"
+                                >
+                                <button type="submit" class="btn-cyber" id="smartScanBtn">
+                                    <i class="bi bi-lightning-charge-fill me-1"></i> Scan Now
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Quick 1-Click Example Presets -->
+                        <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+                            <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;">Try Presets:</span>
+
+                            <span class="chip" onclick="setPreset('URGENT: Earn Rs 10,000 daily working 2 hours! Click telegram link: https://t.me/fake_job_bonus')">
+                                <i class="bi bi-briefcase-fill text-warning"></i> Fake Job Scam
+                            </span>
+                            <span class="chip" onclick="setPreset('Dear Customer, your bank account is frozen. Update KYC now at http://secure-bank-kyc-update.xyz')">
+                                <i class="bi bi-bank text-danger"></i> Bank KYC Trap
+                            </span>
+                            <span class="chip" onclick="setPreset('http://free-crypto-giveaway-claim.top/bonus')">
+                                <i class="bi bi-link-45deg text-info"></i> Phishing Link
+                            </span>
+                        </div>
+
+                        <!-- Scan Results Container -->
+                        <div id="smartResultArea" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Server & API Navigation Hub -->
+                <div class="glass-card">
+                    <div class="card-header-styled d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-diagram-3-fill text-cyan fs-5"></i>
+                            <h5 class="m-0 fw-bold">Live API & Subsystem Endpoints</h5>
+                        </div>
+                        <span class="badge bg-secondary bg-opacity-25 text-light extra-small">Operational Hub</span>
+                    </div>
+                    <div class="card-body-styled">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <a href="/" class="d-flex align-items-center gap-3 p-3 rounded-4 text-decoration-none glass-card mb-0" style="background: rgba(255, 255, 255, 0.03);">
+                                    <div class="p-2 rounded-3 bg-info bg-opacity-10 text-cyan">
+                                        <i class="bi bi-speedometer2 fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-white small">Main Cyber Hub</div>
+                                        <div class="text-secondary extra-small">Full graphical analyzer</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <a href="/api/health" target="_blank" class="d-flex align-items-center gap-3 p-3 rounded-4 text-decoration-none glass-card mb-0" style="background: rgba(255, 255, 255, 0.03);">
+                                    <div class="p-2 rounded-3 bg-danger bg-opacity-10 text-danger">
+                                        <i class="bi bi-heart-pulse-fill fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-white small">API Health Status</div>
+                                        <div class="text-secondary extra-small">Engine heartbeat & ping</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <a href="/api/localhost/metrics" target="_blank" class="d-flex align-items-center gap-3 p-3 rounded-4 text-decoration-none glass-card mb-0" style="background: rgba(255, 255, 255, 0.03);">
+                                    <div class="p-2 rounded-3 bg-warning bg-opacity-10 text-warning">
+                                        <i class="bi bi-bar-chart-fill fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-white small">Server Telemetry</div>
+                                        <div class="text-secondary extra-small">Performance & connection stats</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <a href="/api/ueba/dashboard" target="_blank" class="d-flex align-items-center gap-3 p-3 rounded-4 text-decoration-none glass-card mb-0" style="background: rgba(255, 255, 255, 0.03);">
+                                    <div class="p-2 rounded-3 bg-success bg-opacity-10 text-success">
+                                        <i class="bi bi-people-fill fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-white small">UEBA Analytics API</div>
+                                        <div class="text-secondary extra-small">Entity baselines & feed</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <div class="row g-2" id="quickLinksRow">
-                <div class="col-6 col-md-4">
-                    <a href="/" class="d-flex align-items-center gap-2 p-3 rounded-3 text-decoration-none" style="background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:var(--text); transition:all .2s;" onmouseover="this.style.borderColor='rgba(0,200,255,.35)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
-                        <i class="bi bi-speedometer2" style="color:var(--cyan); font-size:1.1rem;"></i>
-                        <span style="font-size:.88rem; font-weight:600;">Main Dashboard</span>
-                    </a>
+
+            <!-- Right Column: Diagnostics & Mobile Pairing (col-lg-5) -->
+            <div class="col-lg-5">
+
+                <!-- Server Self-Diagnostic Matrix -->
+                <div class="glass-card">
+                    <div class="card-header-styled d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-shield-check text-cyan fs-5"></i>
+                            <h5 class="m-0 fw-bold">Subsystem Health Matrix</h5>
+                        </div>
+                        <span id="diagScoreBadge" class="badge badge-status" style="background: rgba(255, 255, 255, 0.08); color: var(--text-secondary);">Testing...</span>
+                    </div>
+                    <div class="card-body-styled">
+                        <p class="text-secondary small mb-3">
+                            Verifies model API connectivity, isolated memory sandbox hooks, and local network packet listeners.
+                        </p>
+
+                        <div id="diagList" class="d-flex flex-column gap-2 mb-3">
+                            <div class="diag-item">
+                                <div>
+                                    <div class="diag-label"><i class="bi bi-circle text-secondary me-2"></i>Gemini AI Engine</div>
+                                    <div class="diag-detail">Initializing self-test...</div>
+                                </div>
+                            </div>
+                            <div class="diag-item">
+                                <div>
+                                    <div class="diag-label"><i class="bi bi-circle text-secondary me-2"></i>Virtual Sandbox Detonator</div>
+                                    <div class="diag-detail">Initializing self-test...</div>
+                                </div>
+                            </div>
+                            <div class="diag-item">
+                                <div>
+                                    <div class="diag-label"><i class="bi bi-circle text-secondary me-2"></i>Wi-Fi LAN Broadcast Egress</div>
+                                    <div class="diag-detail">Initializing self-test...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn-cyber w-100" onclick="runSelfCheck()" id="btnSelfCheck">
+                            <i class="bi bi-check2-all me-1"></i> Run Diagnostics Test
+                        </button>
+                    </div>
                 </div>
-                <div class="col-6 col-md-4">
-                    <a href="/api/health" target="_blank" class="d-flex align-items-center gap-2 p-3 rounded-3 text-decoration-none" style="background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:var(--text); transition:all .2s;" onmouseover="this.style.borderColor='rgba(0,200,255,.35)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
-                        <i class="bi bi-heart-pulse-fill" style="color:#f87171; font-size:1.1rem;"></i>
-                        <span style="font-size:.88rem; font-weight:600;">API Health</span>
-                    </a>
+
+                <!-- Mobile QR Code & LAN Broadcast Card -->
+                <div class="glass-card" id="mobileQrCard">
+                    <div class="card-header-styled d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-qr-code text-cyan fs-5"></i>
+                            <h5 class="m-0 fw-bold">Mobile & Multi-Device LAN</h5>
+                        </div>
+                        <span id="portalPortBadge" class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-25 font-monospace extra-small">Port 5000</span>
+                    </div>
+                    <div class="card-body-styled">
+                        <p class="text-secondary small mb-3">
+                            Scan this QR code with any mobile device or laptop connected to the same Wi-Fi network for instant access:
+                        </p>
+
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-4 mb-3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);">
+                            <div style="background: #fff; padding: 8px; border-radius: 12px; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);">
+                                <img id="portalQrImg" src="" alt="QR Code for Mobile Wi-Fi Access" style="width: 104px; height: 104px; border-radius: 6px; display: block;">
+                            </div>
+                            <div class="flex-grow-1 min-w-0">
+                                <div class="text-secondary extra-small fw-bold text-uppercase mb-1" style="letter-spacing: 0.06em;">Local Area Network IP</div>
+                                <div class="lan-url-box mb-2" id="portalLanUrl">Loading IP...</div>
+                                <button class="btn btn-sm btn-cyber-outline" onclick="copyPortalUrl()" id="copyBtn" style="font-size: 0.82rem; padding: 6px 14px;">
+                                    <i class="bi bi-clipboard me-1"></i> Copy Link
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2 text-secondary small">
+                            <i class="bi bi-info-circle-fill text-cyan"></i>
+                            <span>No cloud setup needed. Operates entirely over local network packets.</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-6 col-md-4">
-                    <a href="/api/localhost/metrics" target="_blank" class="d-flex align-items-center gap-2 p-3 rounded-3 text-decoration-none" style="background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:var(--text); transition:all .2s;" onmouseover="this.style.borderColor='rgba(0,200,255,.35)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
-                        <i class="bi bi-bar-chart-fill" style="color:#a78bfa; font-size:1.1rem;"></i>
-                        <span style="font-size:.88rem; font-weight:600;">Server Metrics</span>
-                    </a>
-                </div>
+
             </div>
+
         </div>
 
-    </div><!-- /container -->
+    </div>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap 5 Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        /* ── Preset Scan ── */
+        /* ───── Audio Synthesizer (Aligned with Official Website) ───── */
+        let soundFxEnabled = true;
+        let audioCtx = null;
+
+        function toggleSoundFx() {
+            soundFxEnabled = !soundFxEnabled;
+            const btnText = document.getElementById('soundFxText');
+            const icon = document.getElementById('soundFxIcon');
+            if (soundFxEnabled) {
+                if (btnText) btnText.innerText = 'FX: ON';
+                if (icon) icon.className = 'bi bi-volume-up-fill text-warning';
+                playCyberSound('click');
+            } else {
+                if (btnText) btnText.innerText = 'FX: OFF';
+                if (icon) icon.className = 'bi bi-volume-mute-fill text-secondary';
+            }
+        }
+
+        function playCyberSound(type) {
+            if (!soundFxEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'alert') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.linearRampToValueAtTime(800, now + 0.2);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                }
+            } catch (e) {}
+        }
+
+        /* ───── Theme Switcher Engine ───── */
+        function setTheme(themeName, element) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem('scamshield_theme', themeName);
+
+            const menuItems = document.querySelectorAll('#themeDropdownBtn + .dropdown-menu .dropdown-item');
+            menuItems.forEach(item => item.classList.remove('active'));
+            if (element) element.classList.add('active');
+            playCyberSound('click');
+        }
+
+        // Restore saved theme on load
+        const savedTheme = localStorage.getItem('scamshield_theme') || 'cyber-dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        /* ───── Particle Canvas Animation ───── */
+        function initBgParticleCanvas() {
+            const canvas = document.getElementById('bgParticleCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let w = canvas.width = window.innerWidth;
+            let h = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            });
+
+            const particles = [];
+            const count = 35;
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    vx: (Math.random() - 0.5) * 0.6,
+                    vy: (Math.random() - 0.5) * 0.6,
+                    radius: Math.random() * 2 + 1
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                ctx.fillStyle = 'rgba(0, 242, 254, 0.4)';
+                ctx.strokeStyle = 'rgba(0, 242, 254, 0.08)';
+
+                particles.forEach((p, idx) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < 0) p.x = w;
+                    if (p.x > w) p.x = 0;
+                    if (p.y < 0) p.y = h;
+                    if (p.y > h) p.y = 0;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    for (let j = idx + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                        if (dist < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+                    }
+                });
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        /* ───── 1-Click Preset Selection ───── */
         function setPreset(text) {
             document.getElementById('smartInput').value = text;
+            playCyberSound('click');
             runSmartScan();
         }
 
-        /* ── Smart Scan ── */
+        /* ───── Universal 1-Box Smart Scanner ───── */
         async function runSmartScan() {
-            const input  = document.getElementById('smartInput').value.trim();
-            const btn    = document.getElementById('smartScanBtn');
-            const area   = document.getElementById('smartResultArea');
+            const input = document.getElementById('smartInput').value.trim();
+            const btn = document.getElementById('smartScanBtn');
+            const area = document.getElementById('smartResultArea');
 
             if (!input) return;
             btn.disabled = true;
-            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Scanning…`;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Scanning...`;
+            playCyberSound('click');
 
             try {
-                const res  = await fetch('/api/localhost/quick_scan', {
+                const res = await fetch('/api/localhost/quick_scan', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ query: input })
@@ -494,39 +954,51 @@
                 const data = await res.json();
 
                 let score = data.risk_score || 0;
-                let colorClass = score >= 70 ? 'verdict-danger' : (score >= 35 ? 'verdict-warn' : 'verdict-safe');
-                let iconClass  = score >= 70 ? 'bi-exclamation-triangle-fill text-danger' : (score >= 35 ? 'bi-exclamation-circle-fill text-warning' : 'bi-check-circle-fill text-success');
-                let bgColor    = score >= 70 ? 'rgba(255,23,68,.08)'  : (score >= 35 ? 'rgba(255,179,0,.08)' : 'rgba(0,230,118,.08)');
-                let borderColor= score >= 70 ? 'rgba(255,23,68,.3)'   : (score >= 35 ? 'rgba(255,179,0,.3)'  : 'rgba(0,230,118,.3)');
+                let isCritical = score >= 70;
+                let isMedium = score >= 35 && score < 70;
+
+                let colorClass = isCritical ? 'text-danger' : (isMedium ? 'text-warning' : 'text-success');
+                let badgeClass = isCritical ? 'bg-danger' : (isMedium ? 'bg-warning text-dark' : 'bg-success');
+                let iconClass = isCritical ? 'bi-exclamation-triangle-fill text-danger' : (isMedium ? 'bi-exclamation-circle-fill text-warning' : 'bi-check-circle-fill text-success');
+                let borderColor = isCritical ? 'rgba(255, 23, 68, 0.4)' : (isMedium ? 'rgba(255, 179, 0, 0.4)' : 'rgba(0, 230, 118, 0.4)');
+                let bgColor = isCritical ? 'rgba(255, 23, 68, 0.08)' : (isMedium ? 'rgba(255, 179, 0, 0.08)' : 'rgba(0, 230, 118, 0.08)');
+
+                playCyberSound(score >= 50 ? 'alert' : 'success');
 
                 area.style.display = 'block';
                 area.innerHTML = `
-                    <div class="result-box ${colorClass}" style="background:${bgColor}; border-color:${borderColor};">
+                    <div class="result-box mt-3" style="border-color: ${borderColor}; background: ${bgColor};">
                         <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
-                            <div class="d-flex align-items-center gap-2">
-                                <i class="bi ${iconClass} fs-5"></i>
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi ${iconClass} fs-3"></i>
                                 <div>
-                                    <div style="font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;">${data.detected_type || 'Content Scan'}</div>
-                                    <div style="font-size:1.1rem; font-weight:700;">${data.verdict}</div>
+                                    <div class="text-secondary extra-small fw-bold text-uppercase" style="letter-spacing: 0.06em;">${data.detected_type || 'Heuristic Content Scan'}</div>
+                                    <h5 class="fw-bold m-0 ${colorClass}">${data.verdict}</h5>
                                 </div>
                             </div>
-                            <div style="background:rgba(255,255,255,.08); border-radius:10px; padding:8px 16px; text-align:center; flex-shrink:0;">
-                                <div style="font-size:1.4rem; font-weight:800;">${score}</div>
-                                <div style="font-size:.7rem; color:var(--muted);">/ 100 Risk</div>
+                            <div class="badge ${badgeClass} fs-6 py-2 px-3 rounded-3 text-center">
+                                <div class="fw-bold">${score}/100</div>
+                                <div style="font-size: 0.65rem; opacity: 0.85;">Risk Score</div>
                             </div>
                         </div>
-                        <div style="font-size:.85rem; font-weight:600; color:#fff; margin-bottom:8px;">AI Analysis:</div>
-                        <ul style="padding-left:18px; margin:0;">
-                            ${(data.reasons || []).map(r => `<li style="font-size:.84rem; color:var(--muted); margin-bottom:5px;">${r}</li>`).join('')}
+
+                        <div class="text-white small fw-bold mb-2"><i class="bi bi-shield-shaded text-cyan me-1"></i> Behavioral Analysis Findings:</div>
+                        <ul class="list-unstyled d-flex flex-column gap-1 m-0 text-secondary small">
+                            ${(data.reasons || []).map(r => `
+                                <li class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-arrow-right-short text-cyan mt-1"></i>
+                                    <span>${r}</span>
+                                </li>
+                            `).join('')}
                         </ul>
                     </div>
                 `;
             } catch (err) {
                 area.style.display = 'block';
                 area.innerHTML = `
-                    <div class="result-box" style="border-color:rgba(255,23,68,.4); background:rgba(255,23,68,.06);">
+                    <div class="result-box mt-3" style="border-color: rgba(255, 23, 68, 0.4); background: rgba(255, 23, 68, 0.08);">
                         <i class="bi bi-x-circle-fill text-danger me-2"></i>
-                        <span style="color:#ff6b6b;">Scan failed: ${err.message}. Make sure the server is running.</span>
+                        <span class="text-danger small">Scan execution failed: ${err.message}. Check backend server status.</span>
                     </div>`;
             } finally {
                 btn.disabled = false;
@@ -534,89 +1006,108 @@
             }
         }
 
-        /* ── Self Check ── */
+        /* ───── Server Self-Diagnostics ───── */
         async function runSelfCheck() {
-            const btn    = document.getElementById('btnSelfCheck');
-            const list   = document.getElementById('diagList');
-            const badge  = document.getElementById('diagScoreBadge');
+            const btn = document.getElementById('btnSelfCheck');
+            const list = document.getElementById('diagList');
+            const badge = document.getElementById('diagScoreBadge');
+            const heroLatency = document.getElementById('hero-latency-badge');
 
             btn.disabled = true;
-            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Checking…`;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Testing Subsystems...`;
 
             try {
-                const res  = await fetch('/api/localhost/test_all');
+                const startTime = performance.now();
+                const res = await fetch('/api/localhost/test_all');
                 const data = await res.json();
+                const latency = Math.round(performance.now() - startTime);
+
+                if (heroLatency) {
+                    heroLatency.innerHTML = `<i class="bi bi-lightning-fill me-1"></i>${latency} ms`;
+                }
 
                 const score = data.health_score || 0;
                 badge.textContent = `Health: ${score}%`;
-                badge.style.background = score === 100 ? 'rgba(0,230,118,.12)' : 'rgba(255,179,0,.12)';
-                badge.style.color       = score === 100 ? 'var(--green)' : 'var(--yellow)';
-                badge.style.border      = score === 100 ? '1px solid rgba(0,230,118,.3)' : '1px solid rgba(255,179,0,.3)';
+                badge.style.background = score === 100 ? 'rgba(0, 230, 118, 0.15)' : 'rgba(255, 179, 0, 0.15)';
+                badge.style.color = score === 100 ? 'var(--safe-color)' : 'var(--warn-color)';
+                badge.style.border = score === 100 ? '1px solid rgba(0, 230, 118, 0.3)' : '1px solid rgba(255, 179, 0, 0.3)';
 
                 list.innerHTML = (data.diagnostics || []).map(d => `
-                    <div class="diag-item" style="border-color:${d.pass ? 'rgba(0,230,118,.2)' : 'rgba(255,23,68,.2)'};">
+                    <div class="diag-item" style="border-color: ${d.pass ? 'rgba(0, 230, 118, 0.25)' : 'rgba(255, 23, 68, 0.25)'};">
                         <div>
                             <div class="diag-label">
                                 <i class="bi ${d.pass ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger'} me-2"></i>${d.name}
                             </div>
                             <div class="diag-detail ms-4">${d.details || ''}</div>
                         </div>
-                        <span class="badge-status" style="background:${d.pass ? 'rgba(0,230,118,.15)' : 'rgba(255,23,68,.15)'}; color:${d.pass ? 'var(--green)' : 'var(--red)'}; border:1px solid ${d.pass ? 'rgba(0,230,118,.3)' : 'rgba(255,23,68,.3)'};">
+                        <span class="badge-status" style="background: ${d.pass ? 'rgba(0, 230, 118, 0.15)' : 'rgba(255, 23, 68, 0.15)'}; color: ${d.pass ? 'var(--safe-color)' : 'var(--danger-color)'}; border: 1px solid ${d.pass ? 'rgba(0, 230, 118, 0.3)' : 'rgba(255, 23, 68, 0.3)'};">
                             ${d.status}
                         </span>
                     </div>
                 `).join('');
             } catch (err) {
                 list.innerHTML = `
-                    <div class="result-box" style="border-color:rgba(255,23,68,.3); background:rgba(255,23,68,.06);">
+                    <div class="result-box" style="border-color: rgba(255, 23, 68, 0.3); background: rgba(255, 23, 68, 0.06);">
                         <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
-                        <span style="font-size:.85rem; color:#ff6b6b;">Diagnostic failed: ${err.message}</span>
+                        <span class="small text-danger">Diagnostic failed: ${err.message}</span>
                     </div>`;
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="bi bi-check2-all me-2"></i> Run Health Check`;
+                btn.innerHTML = `<i class="bi bi-check2-all me-1"></i> Run Diagnostics Test`;
             }
         }
 
-        /* ── Load LAN Info ── */
+        /* ───── Load Network & QR Broadcast Info ───── */
         async function loadPortalInfo() {
             try {
-                const res  = await fetch('/api/localhost_info');
+                const res = await fetch('/api/localhost_info');
                 const data = await res.json();
 
-                const lanEl  = document.getElementById('portalLanUrl');
-                const qrImg  = document.getElementById('portalQrImg');
+                const lanEl = document.getElementById('portalLanUrl');
+                const qrImg = document.getElementById('portalQrImg');
                 const portBadge = document.getElementById('portalPortBadge');
+                const heroHost = document.getElementById('hero-host-url');
+                const navHost = document.getElementById('nav-host-ip');
 
-                if (lanEl) lanEl.textContent = data.lan_url || 'http://127.0.0.1:5000';
+                const lanUrl = data.lan_url || 'http://127.0.0.1:5000';
+
+                if (lanEl) lanEl.textContent = lanUrl;
+                if (heroHost) heroHost.textContent = lanUrl;
+                if (navHost) navHost.textContent = lanUrl;
                 if (portBadge) portBadge.textContent = `Port ${data.port || 5000}`;
-                if (qrImg && data.lan_url) {
-                    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.lan_url)}&bgcolor=ffffff&color=000000&margin=2`;
+
+                if (qrImg && lanUrl) {
+                    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(lanUrl)}&bgcolor=ffffff&color=000000&margin=2`;
                 }
-            } catch(e) {
+            } catch (e) {
                 const lanEl = document.getElementById('portalLanUrl');
                 if (lanEl) lanEl.textContent = 'http://127.0.0.1:5000';
                 const qrImg = document.getElementById('portalQrImg');
-                if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=http://127.0.0.1:5000&bgcolor=ffffff&color=000000&margin=2`;
+                if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=http://127.0.0.1:5000&bgcolor=ffffff&color=000000&margin=2`;
             }
         }
 
-        /* ── Copy LAN URL ── */
+        /* ───── Copy LAN URL ───── */
         async function copyPortalUrl() {
-            const el  = document.getElementById('portalLanUrl');
+            const el = document.getElementById('portalLanUrl');
             const btn = document.getElementById('copyBtn');
             if (!el) return;
+            const text = el.textContent || el.innerText;
             try {
-                await navigator.clipboard.writeText(el.textContent);
-                btn.innerHTML = `<i class="bi bi-check2 me-1"></i> Copied!`;
-                setTimeout(() => { btn.innerHTML = `<i class="bi bi-clipboard me-1"></i> Copy Link`; }, 2000);
-            } catch(e) {
-                alert('Link: ' + el.textContent);
+                await navigator.clipboard.writeText(text);
+                playCyberSound('success');
+                if (btn) {
+                    btn.innerHTML = `<i class="bi bi-check2 me-1"></i> Copied!`;
+                    setTimeout(() => { btn.innerHTML = `<i class="bi bi-clipboard me-1"></i> Copy Link`; }, 2000);
+                }
+            } catch (e) {
+                alert('Copied URL: ' + text);
             }
         }
 
-        /* ── Init ── */
+        /* ───── Startup Lifecycle ───── */
         document.addEventListener('DOMContentLoaded', () => {
+            initBgParticleCanvas();
             loadPortalInfo();
             runSelfCheck();
         });

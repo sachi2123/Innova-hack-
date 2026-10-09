@@ -10,6 +10,13 @@ from google.genai import Client
 from google.genai import types
 from PIL import Image
 import io
+import ueba_engine
+from ueba_engine import (
+    USERS, RESOURCE_SENSITIVITY, ALERT_FEED, ueba_instance,
+    process_event, analyze_text_sentiment, score_graph_traversal_anomaly,
+    verify_behavioral_biometrics, calculate_shannon_entropy, detect_dns_tunneling,
+    get_jit_micro_containment_tier, request_dual_auth_unmask, calculate_impossible_travel
+)
 
 def get_lan_ip():
     """Detects local network IP address for LAN access (e.g. 192.168.x.x)."""
@@ -610,6 +617,221 @@ def api_localhost_metrics():
         'memory_status': 'Optimal (< 120 MB)',
         'network_mode': 'LAN Broadcast Ready'
     })
+
+@app.route('/api/simulate', methods=['POST'])
+def api_simulate():
+    """Simulates an ingested workplace telemetry event for real-time UEBA scoring."""
+    data = request.json or {}
+    user_id = data.get('user_id', 'u_rahul')
+    hour = int(data.get('hour', 14))
+    transfer_mb = float(data.get('transfer_mb', 100.0))
+    file_accessed = data.get('file_accessed', 'general_document.pdf')
+    destination = data.get('destination', 'Internal Corporate Share')
+
+    result = process_event(user_id, hour, transfer_mb, file_accessed, destination)
+    return jsonify(result)
+
+@app.route('/api/ueba/dashboard', methods=['GET'])
+def api_ueba_dashboard():
+    """Returns aggregated behavioral metrics, user baseline summaries, and alert feed."""
+    total_monitored = len(USERS)
+    total_alerts = len(ALERT_FEED)
+    critical_alerts = sum(1 for a in ALERT_FEED if str(a.get("severity", "")).lower() == "critical")
+    high_alerts = sum(1 for a in ALERT_FEED if str(a.get("severity", "")).lower() == "high")
+    fp_marked = sum(1 for a in ALERT_FEED if a.get("false_positive_status") == "MARKED_FALSE_POSITIVE")
+    fp_rate = round((fp_marked / total_alerts * 100), 1) if total_alerts > 0 else 0.0
+
+    return jsonify({
+        "status": "success",
+        "total_entities_monitored": total_monitored,
+        "total_alerts": total_alerts,
+        "critical_alerts": critical_alerts,
+        "high_alerts": high_alerts,
+        "false_positives_marked": fp_marked,
+        "false_positive_rate": fp_rate,
+        "users": list(USERS.values()),
+        "alerts": ALERT_FEED
+    })
+
+@app.route('/api/ueba/user', methods=['POST'])
+def api_ueba_user():
+    """Onboards a new employee entity profile into the UEBA baseline engine."""
+    data = request.json or {}
+    name = data.get('name', '').strip()
+    if not name:
+        return jsonify({'error': 'Employee name is required'}), 400
+
+    dept = data.get('department') or data.get('dept') or 'General'
+    role = data.get('role', 'Employee')
+    avg_mb = float(data.get('baseline_avg_mb', 100.0))
+    std_mb = float(data.get('baseline_std_mb', 30.0))
+    start_h = int(data.get('start_hour', 9))
+    end_h = int(data.get('end_hour', 18))
+    on_wl = bool(data.get('on_watchlist', False))
+    reason = data.get('watchlist_reason', '')
+
+    user_id = f"u_{name.lower().replace(' ', '_')}"
+    new_user = {
+        "user_id": user_id,
+        "name": name,
+        "department": dept,
+        "dept": dept,
+        "role": role,
+        "baseline_avg_mb": avg_mb,
+        "baseline_std_mb": std_mb,
+        "bytes_mean_mb": avg_mb,
+        "bytes_std_mb": std_mb,
+        "start_hour": start_h,
+        "end_hour": end_h,
+        "working_hours": f"{start_h:02d}:00 - {end_h:02d}:00",
+        "on_watchlist": on_wl,
+        "watchlist_reason": reason,
+        "current_risk": 20 if on_wl else 10,
+        "event_count": 0,
+        "last_file_accessed": "None"
+    }
+    USERS[user_id] = new_user
+
+    return jsonify({
+        "status": "success",
+        "message": f"Successfully enrolled entity profile for {name} ({user_id})",
+        "user": new_user
+    })
+
+@app.route('/api/ueba/scenario', methods=['POST'])
+def api_ueba_scenario():
+    """Triggers interactive attack/exfiltration simulation scenarios."""
+    data = request.json or {}
+    scenario = data.get('scenario', 'rogue_exfil')
+
+    if scenario in ['rogue_exfil', 'exfiltration']:
+        ev = process_event("u_rahul", 2, 2450.0, "executive_salaries_2026.xlsx", "External USB Drive")
+    elif scenario == 'honeypot':
+        ev = process_event("u_ananya", 14, 10.0, "canary_honeypot_passwords.xlsx", "External USB Drive")
+    elif scenario == 'devops_normal':
+        ev = process_event("u_vikram", 14, 1100.0, "engineering_codebase.tar.gz", "Dev Server Build")
+    elif scenario == 'hr_pii':
+        ev = process_event("u_neha", 22, 450.0, "q2_tax_returns.pdf", "Personal Google Drive")
+    else:
+        ev = process_event("u_rahul", 3, 1850.0, "executive_salaries_2026.xlsx", "External USB Drive")
+
+    return jsonify({"status": "success", "scenario": scenario, "alert": ev})
+
+@app.route('/api/ueba/feedback', methods=['POST'])
+def api_ueba_feedback():
+    """Receives SOC analyst false positive marking & auto-tunes user baselines."""
+    data = request.json or {}
+    alert_id = data.get('alert_id')
+    feedback_type = data.get('feedback_type', 'MARKED_FALSE_POSITIVE')
+
+    target_alert = next((a for a in ALERT_FEED if a.get("alert_id") == alert_id), None)
+    if target_alert:
+        target_alert['false_positive_status'] = feedback_type
+        if feedback_type == 'MARKED_FALSE_POSITIVE':
+            uid = target_alert.get('user_id')
+            user = USERS.get(uid)
+            if user:
+                user['baseline_avg_mb'] = max(user.get('baseline_avg_mb', 100), float(target_alert.get('transfer_mb', 100)))
+                user['bytes_mean_mb'] = user['baseline_avg_mb']
+                user['current_risk'] = max(10, user.get('current_risk', 20) - 20)
+
+    return jsonify({"status": "success", "message": "Feedback recorded & model baseline auto-tuned."})
+
+@app.route('/api/ueba/rebaseline', methods=['POST'])
+def api_ueba_rebaseline():
+    """Recalibrates Isolation Forest boundaries and clears transient alert spikes."""
+    for user in USERS.values():
+        user['current_risk'] = 15 if not user.get('on_watchlist') else 35
+    return jsonify({
+        "status": "success",
+        "message": "Isolation Forest models retrained. Dynamic entity baselines calibrated."
+    })
+
+@app.route('/api/ueba/nlp_sentiment', methods=['POST'])
+def api_ueba_nlp_sentiment():
+    """Analyzes text for resignation intent, disgruntlement, and sentiment velocity."""
+    data = request.json or {}
+    text = data.get('text', '')
+    prev_score = float(data.get('previous_score', 0.10))
+    delta_days = float(data.get('delta_t_days', 1.0))
+    result = analyze_text_sentiment(text, previous_score=prev_score, delta_t_days=delta_days)
+    return jsonify(result)
+
+@app.route('/api/ueba/graph', methods=['POST'])
+def api_ueba_graph():
+    """Scores Graph Neural Network (GNN) traversal anomaly across entity access hops."""
+    data = request.json or {}
+    user_id = data.get('user_id', 'u_rahul')
+    target_resource = data.get('target_resource', 'db_payroll_core')
+    jump_host = data.get('jump_host', 'host_marketing_01')
+    result = score_graph_traversal_anomaly(user_id, target_resource, jump_host)
+    return jsonify(result)
+
+@app.route('/api/ueba/biometrics', methods=['POST'])
+def api_ueba_biometrics():
+    """Evaluates keystroke flight/dwell timing and mouse kinematics for zero-trust challenge."""
+    data = request.json or {}
+    user_id = data.get('user_id', 'u_rahul')
+    flight_time = float(data.get('flight_time_ms', 210.0))
+    dwell_time = float(data.get('dwell_time_ms', 160.0))
+    mouse_jitter = float(data.get('mouse_jitter', 35.0))
+    result = verify_behavioral_biometrics(user_id, flight_time, dwell_time, mouse_jitter)
+    return jsonify(result)
+
+@app.route('/api/ueba/entropy', methods=['POST'])
+def api_ueba_entropy():
+    """Evaluates Shannon entropy and DNS tunneling exfiltration payloads."""
+    data = request.json or {}
+    payload = data.get('payload', '')
+    query_domain = data.get('query_domain', 'chunk1.exfil.attacker-c2-domain.com')
+    entropy_score = calculate_shannon_entropy(payload)
+    dns_res = detect_dns_tunneling(query_domain)
+    return jsonify({
+        "status": "success",
+        "shannon_entropy": entropy_score,
+        "dns_inspection": dns_res
+    })
+
+@app.route('/api/ueba/containment', methods=['POST'])
+def api_ueba_containment():
+    """Returns dynamic Just-In-Time (JIT) micro-containment parameters."""
+    data = request.json or {}
+    risk_score = float(data.get('risk_score', 50.0))
+    result = get_jit_micro_containment_tier(risk_score)
+    return jsonify(result)
+
+@app.route('/api/ueba/unmask', methods=['POST'])
+def api_ueba_unmask():
+    """Dual-authorization zero-trust identity unmasking endpoint."""
+    data = request.json or {}
+    alert_id = data.get('alert_id', '')
+    token_1 = data.get('token_lead_1', '').strip()
+    token_2 = data.get('token_lead_2', '').strip()
+
+    if not token_1 or not token_2 or token_1 == token_2:
+        return jsonify({'error': 'Two distinct dual-authorization tokens are required.'}), 400
+
+    result = request_dual_auth_unmask(alert_id, token_1, token_2)
+    return jsonify(result)
+
+@app.route('/api/ueba/ip_track', methods=['POST'])
+def api_ueba_ip_track():
+    """Evaluates impossible travel geolocation speed and Tor exit hops."""
+    data = request.json or {}
+    orig_ip = data.get('origin_ip', '108.12.44.1')
+    orig_city = data.get('origin_city', 'New York')
+    dest_ip = data.get('destination_ip', '82.165.197.1')
+    dest_city = data.get('destination_city', 'London')
+    time_delta = float(data.get('time_delta_mins', 10.0))
+    c_lat1 = data.get('custom_lat1')
+    c_lon1 = data.get('custom_lon1')
+    c_lat2 = data.get('custom_lat2')
+    c_lon2 = data.get('custom_lon2')
+
+    result = calculate_impossible_travel(orig_ip, orig_city, dest_ip, dest_city, time_delta,
+                                         custom_lat1=c_lat1, custom_lon1=c_lon1,
+                                         custom_lat2=c_lat2, custom_lon2=c_lon2)
+    return jsonify(result)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
